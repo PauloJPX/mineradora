@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário</title>
+</head>
+<body>
+    <h1>Cadastro de Usuário</h1>
+
+    <!-- Formulário para adicionar um novo usuário -->
+    <form action="{{ url_for('usuarios.cadastro') }}" method="post">
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="is_admin">Administrador:</label>
+        <input type="checkbox" id="is_admin" name="is_admin">
+
+        <button type="submit">Adicionar</button>
+    </form>
+
+    <!-- Tabela com a lista de usuários -->
+    <h2>Lista de Usuários</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Usuário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.idusuario }}</td>
+                <td>{{ usuario.usuario }}</td>
+                <td>
+                    <!-- Formulário para excluir o usuário -->
+                    <form action="{{ url_for('usuarios.delete_user', user_id=usuario.idusuario) }}" method="post" style="display:inline;">
+                        <button type="submit">Excluir</button>
+                    </form>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+   <form action="/" method="get">
+      <button type="submit">Voltar à Página Principal</button>
+   </form>
+</body>
+</html>

@@ -1,0 +1,86 @@
+/* Estilização da página de login */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Altura mínima igual à altura da tela */
+    background-color: #f0f0f0; /* Cor de fundo */
+    padding: 20px;
+}
+
+.login-container img {
+    width: 100%;
+    max-width: 400px; /* Limita o tamanho da imagem */
+    height: auto;
+    margin-bottom: 20px; /* Espaçamento entre a imagem e o formulário */
+}
+
+.login-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 100%;
+    max-width: 400px; /* Define a largura máxima */
+}
+
+.login-form label {
+    display: block;
+    margin: 10px 0 5px 0; /* Espaçamento entre os labels e os campos */
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+
+
+.login-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.login-form button:hover {
+    background-color: #555;
+}
+
+/* Estilização do menu */
+#menu {
+    list-style-type: none; /* Remove as bolinhas da lista */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Exibe os itens horizontalmente */
+    justify-content: flex-start; /* Alinha os itens à esquerda */
+    background-color: #333; /* Cor de fundo do menu */
+}
+
+#menu li {
+    margin-right: 20px; /* Espaçamento entre os itens do menu */
+}
+
+#menu li:last-child {
+    margin-right: 0; /* Remove o espaçamento do último item */
+}
+
+#menu li a {
+    display: block;
+    padding: 14px 20px; /* Espaçamento interno dos links */
+    text-decoration: none; /* Remove o sublinhado dos links */
+    color: white; /* Cor do texto dos links */
+}
+
+#menu li a:hover {
+    background-color: #555; /* Cor de fundo ao passar o mouse */
+}

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Principal</title>
+</head>
+<body>
+    <h1>Bem-vindo!</h1>
+
+    <!-- Exibir o menu apenas se o usuário estiver autenticado -->
+    {% if 'user_id' in session %}
+        <nav>
+            <!-- Menu para todos os usuários -->
+            <ul>
+                <li><a href="{{ url_for('clientes.cadastro_cliente') }}">Cadastro de Cliente</a></li>
+
+                <!-- Menu para o admin -->
+                {% if session.get('is_admin') %}
+                    <li><a href="{{ url_for('usuarios.cadastro_usuario') }}">Cadastro de Usuário</a></li>
+                {% endif %}
+
+                <li><a href="{{ url_for('auth.logout') }}">Sair</a></li>
+            </ul>
+        </nav>
+    {% else %}
+        <p>Você não está logado. <a href="{{ url_for('auth.login') }}">Faça login aqui</a>.</p>
+    {% endif %}
+</body>
+</html>

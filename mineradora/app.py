@@ -2,6 +2,7 @@ from flask import Flask, session, redirect, url_for
 from config import Config
 from functools import wraps
 from routes import auth, usuarios, menu, clientes
+from routes import vendas  # Adicione vendas aqui
 
 def login_required(f):
     @wraps(f)
@@ -18,6 +19,7 @@ app.register_blueprint(auth.bp)
 app.register_blueprint(usuarios.bp)
 app.register_blueprint(clientes.bp)
 app.register_blueprint(menu.bp)
+app.register_blueprint(vendas.bp)  # Registra o blueprint de vendas
 
 @app.route('/')
 @login_required

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+    <title>Incluir Venda</title>
+    <style>
+        /* CSS atualizado aqui */
+
+        button {
+            background-color: #A9A9A9; /* Cor de fundo cinza médio */
+            color: black; /* Cor do texto */
+            border: none; /* Remover bordas */
+            padding: 10px 20px; /* Espaçamento interno */
+            cursor: pointer; /* Mostrar cursor de mão ao passar o mouse */
+            border-radius: 5px; /* Bordas arredondadas */
+            margin-top: 10px; /* Espaço acima do botão */
+        }
+
+        button:hover {
+            background-color: #808080; /* Cor do botão ao passar o mouse (cinza escuro) */
+            color: white; /* Cor do texto */
+        }
+
+        .message-box {
+            display: none; /* Inicialmente escondido */
+            border: 1px solid #4CAF50;
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .error-box {
+            display: none; /* Inicialmente escondido */
+            border: 1px solid #f44336;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        /* Adicionando estilo para alinhar os campos na mesma coluna */
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Largura dos labels */
+        .form-group label {
+            width: 120px; /* Defina uma largura fixa para os labels */
+            margin-right: 10px; /* Espaço entre label e input */
+        }
+
+        /* Estilo base para os campos de entrada */
+        .form-group input,
+        .form-group select {
+            flex: none; /* Não usar flex para evitar que os inputs ocupem todo o espaço */
+        }
+
+        /* Nova classe para reduzir o tamanho dos campos de entrada */
+        .input-pequeno {
+            /*width: 150px;  Largura para campos pequenos */
+            width: 10%;
+        }
+
+        .input-medio {
+            /*width: 250px;  Largura para campos médios */
+            width: 30%;
+        }
+
+        .input-grande {
+            width: 400px; /* Largura para campos grandes */
+        }
+    </style>
+</head>
+<body>
+    <h1>Incluir Nova Venda</h1>
+
+    <div id="message" class="message-box"></div>
+    <div id="error" class="error-box"></div>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="numerovenda">Número da Venda:</label>
+            <input type="number" class="input-pequeno" name="numerovenda" id="numerovenda" required>
+        </div>
+        <div class="form-group">
+            <label for="data_venda">Data da Venda:</label>
+            <input type="date" class="input-pequeno" name="data_venda" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cliente_id">Cliente:</label>
+            <select name="cliente_id" id="cliente_id" class="input-medio">
+                {% for cliente in clientes %}
+                    <option value="{{ cliente.idcliente }}">{{ cliente.razao_social }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="produto_id">Produto:</label>
+            <select name="produto_id" id="produto_id" class="input-medio">
+                {% for produto in produtos %}
+                    <option value="{{ produto.idproduto }}" data-preco="{{ produto.preco_de_venda }}">{{ produto.descricao }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" class="input-pequeno" name="quantidade" required>
+        </div>
+
+        <input type="hidden" name="valor_produto" id="valor_produto">
+
+        <div class="form-group">
+            <label for="valor_negociado">Valor Negociado:</label>
+            <input type="number" class="input-pequeno" name="valor_negociado" id="valor_negociado" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="valor_frete">Valor do Frete:</label>
+            <input type="number" class="input-pequeno" name="valor_frete">
+        </div>
+
+        <button type="submit">Incluir Venda</button>
+        <button type="button" onclick="window.location.href='/menu';">Voltar ao Menu</button>
+    </form>
+
+    <!-- Formulário para excluir venda -->
+    <h2>Excluir Venda</h2>
+    <form id="form_excluir" method="POST" action="/vendas/excluir_venda">
+        <div class="form-group">
+            <label for="numerovenda_excluir">Número da Venda:</label>
+            <input type="number" class="input-pequeno" name="numerovenda_excluir" id="numerovenda_excluir" required>
+        </div>
+        <button type="submit">Excluir Venda</button>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const produtoSelect = document.getElementById('produto_id');
+            const valorNegociadoInput = document.getElementById('valor_negociado');
+            const valorProdutoInput = document.getElementById('valor_produto');
+            const messageBox = document.getElementById('message');
+            const errorBox = document.getElementById('error');
+            const numerovendaInput = document.getElementById('numerovenda');
+
+            produtoSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const precoVenda = selectedOption.getAttribute('data-preco');
+                valorNegociadoInput.value = precoVenda;  // Define o valor negociado
+                valorProdutoInput.value = precoVenda;  // Define o valor do produto invisível
+            });
+
+            // Inicializa o valor negociado com o preço do primeiro produto
+            if (produtoSelect.options.length > 0) {
+                const primeiroProduto = produtoSelect.options[0];
+                const precoVenda = primeiroProduto.getAttribute('data-preco');
+                valorNegociadoInput.value = precoVenda;  // Preencher o valor negociado
+                valorProdutoInput.value = precoVenda;  // Preencher o valor do produto invisível
+            }
+
+            // Exibe a mensagem de sucesso ou erro, se houver
+            const urlParams = new URLSearchParams(window.location.search);
+            const teste = urlParams.get('teste');
+            const msg = urlParams.get('msg');
+
+           // Seleciona o elemento com ID 'message'
+
+            if (!messageBox) {
+               console.error('Elemento messageBox não encontrado');
+            }
+           if (teste === 'sim' && messageBox) {
+               messageBox.innerText = msg;
+               messageBox.style.display = "block";
+           }
+
+
+            // Verificar se o numerovenda já existe ao perder o foco
+            numerovendaInput.addEventListener('blur', function() {
+                const numerovenda = this.value;
+                if (numerovenda) {
+                    fetch(`/vendas/verificar_numerovenda/${numerovenda}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.existe) {
+                                errorBox.innerText = "Venda já existe!";
+                                errorBox.style.display = "block";
+                                // Limpar o campo numerovenda para permitir a correção
+                                numerovendaInput.value = "";
+                                numerovendaInput.focus();
+                            } else {
+                                errorBox.style.display = "none"; // Esconder a mensagem de erro se não existir
+                            }
+                        });
+                }
+            });
+
+            // Fecha as mensagens ao pressionar qualquer tecla
+            document.addEventListener('keydown', function() {
+                messageBox.style.display = "none"; // Oculta mensagem de sucesso
+                errorBox.style.display = "none"; // Oculta mensagem de erro
+            });
+        });
+    </script>
+</body>
+</html>

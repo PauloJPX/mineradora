@@ -1,6 +1,4 @@
-
 from flask import Blueprint, render_template, session
-
 
 # Define o blueprint
 bp = Blueprint('menu', __name__, url_prefix='/menu')
@@ -8,7 +6,8 @@ bp = Blueprint('menu', __name__, url_prefix='/menu')
 # Defina a função para obter os itens do menu
 def get_menu_items(is_admin):
     menu_items = [
-        {'name': 'Cadastro de Cliente', 'url': 'clientes.cadastro_cliente'},
+        {'name': 'Cadastro de Clientes', 'url': 'clientes.cadastro_cliente'},
+        {'name': 'Cadastro de Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
         {'name': 'Logout', 'url': 'auth.logout'},
     ]
 
@@ -18,7 +17,6 @@ def get_menu_items(is_admin):
     return menu_items
 
 # Rota para o menu principal
-
 @bp.route('/')
 def menu_principal():
     # Verifique se o usuário está autenticado e se é admin

@@ -1,9 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import get_db_connection
+#from app import login_required  # Importa o decorador
 
 bp = Blueprint('vendas', __name__, url_prefix='/vendas')
 
 @bp.route('/incluir', methods=['GET', 'POST'])
+#@login_required  # Protege a rota
 def incluir_venda():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -44,6 +46,7 @@ def incluir_venda():
     return render_template('incluir_venda.html', clientes=clientes, produtos=produtos)
 
 @bp.route('/verificar_numerovenda/<int:numerovenda>', methods=['GET'])
+
 def verificar_numerovenda(numerovenda):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -57,16 +60,18 @@ def verificar_numerovenda(numerovenda):
     return jsonify({"existe": venda_existente is not None, "venda": venda_existente})
 
 @bp.route('/excluir_venda', methods=['POST'])
+
 def excluir_venda():
     numerovenda = request.form['numerovenda_excluir']
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("DELETE FROM vendas WHERE numerovenda = %s", (numerovenda,))
-    conn.commit()
-
-    cursor.close()
-    conn.close()
-
-    return redirect(url_for('vendas.incluir_venda', teste='sim', msg='Venda excluida com Sucesso'))
-
+    retorno = verificar_numerovenda(numerovenda) # essa fucao retorna um jso
+    resposta = retorno.json["existe"]
+    if resposta:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM vendas WHERE numerovenda = %s", (numerovenda,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect(url_for('vendas.incluir_venda', teste='sim', msg='Venda excluida com Sucesso'))
+    else:
+        return redirect(url_for('vendas.incluir_venda', teste='sim', msg='Venda nao existia'))

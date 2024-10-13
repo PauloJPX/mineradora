@@ -18,10 +18,6 @@ def login():
         cursor.close()
         conn.close()
 
-        # Mensagens de depuração
-        print(f"Usuário encontrado: {user}")
-        print(f"Senha fornecida: {password}")
-        print(f"Senha armazenada: {user['senha']}")
 
         # Verifica se o usuário existe e se a senha fornecida corresponde ao hash armazenado
         if user and check_password_hash(user['senha'], password):
@@ -36,9 +32,14 @@ def login():
 
 
 @bp.route('/logout')
+#def logout():
+#    session.clear()  # Limpa todas as variáveis de sessão
+#    return render_template('logout.html')
+#    #return redirect(url_for('auth.login'))  # Redireciona para a página de login
+
 def logout():
     session.clear()  # Limpa todas as variáveis de sessão
-    return redirect(url_for('auth.login'))  # Redireciona para a página de login
+    return render_template('pagina_em_branco.html')  # Redireciona para a página em branco
 
 
 # Adiciona uma rota para a página principal/menu

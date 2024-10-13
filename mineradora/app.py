@@ -1,7 +1,7 @@
 from flask import Flask, session, redirect, url_for, request
 from config import Config
 from functools import wraps
-from routes import auth, usuarios, menu, clientes, vendas
+from routes import auth, usuarios, menu, clientes, vendas,inicio
 
 def login_required(f):
     @wraps(f)
@@ -20,6 +20,7 @@ app.register_blueprint(usuarios.bp)
 app.register_blueprint(clientes.bp)
 app.register_blueprint(menu.bp)
 app.register_blueprint(vendas.bp)
+app.register_blueprint(inicio.bp)
 
 # Proteger todas as rotas do blueprint de vendas
 @app.before_request

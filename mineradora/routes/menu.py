@@ -6,9 +6,11 @@ bp = Blueprint('menu', __name__, url_prefix='/menu')
 # Defina a função para obter os itens do menu
 def get_menu_items(is_admin):
     menu_items = [
-        {'name': 'Cadastro de Clientes', 'url': 'clientes.cadastro_cliente'},
-        {'name': 'Cadastro de Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
-        {'name': 'Logout', 'url': 'auth.logout'},
+        {'name': 'Home', 'url': 'inicio.inicial'},
+        {'name': 'Clientes', 'url': 'clientes.cadastro_cliente'},
+        {'name': 'Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
+        {'name': 'Logout', 'url': 'auth.logout'}
+
     ]
 
     if is_admin:

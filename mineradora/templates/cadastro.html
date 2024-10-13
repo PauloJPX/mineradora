@@ -4,54 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Usuário</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('sua-imagem-de-fundo.jpg'); /* Defina sua imagem de fundo */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding-top: 30px; /* Adiciona um espaçamento superior */
+        }
+
+        .form-panel {
+    background-color: rgba(245, 245, 220, 0.8); /* Bege claro com transparência */
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px; /* Defina a largura do painel */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar efeito 3D */
+    margin-bottom: 20px; /* Espaço entre o painel e a lista */
+}
+
+
+        .form-panel h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 50%; /* Metade do tamanho original */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .form-group input[type="checkbox"] {
+            transform: scale(1.2); /* Aumenta o tamanho do checkbox */
+        }
+
+        .form-group button {
+            width: 100%;
+            padding: 10px;
+            background-color: #000000; /* Cor preta para o botão */
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .form-group button:hover {
+            background-color: #333333; /* Cor ao passar o mouse */
+        }
+
+        .form-group label[for="is_admin"] {
+            font-size: 18px; /* Tamanho maior para o label "Administrador" */
+        }
+
+        .user-list {
+            background-color: rgba(245, 245, 220, 0.8); /* Bege claro com transparência */
+            padding: 20px;
+            border-radius: 10px;
+            width: 600px; /* Largura maior para a lista de usuários */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+        }
+
+        .user-list h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .delete-btn {
+            background-color: #ff4d4d; /* Cor do botão de excluir */
+            border: none;
+            padding: 8px 12px;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: #e60000; /* Cor ao passar o mouse */
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Cadastro de Usuário</h1>
 
-    <!-- Formulário para adicionar um novo usuário -->
-    <form action="{{ url_for('usuarios.cadastro') }}" method="post">
-        <label for="username">Usuário:</label>
-        <input type="text" id="username" name="username" required>
+<div class="container">
+    <!-- Painel de Cadastro de Usuário -->
+    <div class="form-panel">
+        <h1>Cadastro de Usuário</h1>
+        <form action="{{ url_for('usuarios.cadastro') }}" method="post">
+            <div class="form-group">
+                <label for="username">Usuário:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="is_admin">Administrador:</label>
+                <input type="checkbox" id="is_admin" name="is_admin">
+            </div>
+            <div class="form-group">
+                <button type="submit">Adicionar</button>
+            </div>
+        </form>
+    </div>
 
-        <label for="password">Senha:</label>
-        <input type="password" id="password" name="password" required>
+    <!-- Painel de Lista de Usuários -->
+    <div class="user-list">
+        <h2>Lista de Usuários</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuário</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for usuario in usuarios %}
+                <tr>
+                    <td>{{ usuario.idusuario }}</td>
+                    <td>{{ usuario.usuario }}</td>
+                    <td>
+                        <!-- Formulário para excluir o usuário -->
+                        <form action="{{ url_for('usuarios.delete_user', user_id=usuario.idusuario) }}" method="post" style="display:inline;">
+                            <button type="submit" class="delete-btn">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-        <label for="is_admin">Administrador:</label>
-        <input type="checkbox" id="is_admin" name="is_admin">
-
-        <button type="submit">Adicionar</button>
-    </form>
-
-    <!-- Tabela com a lista de usuários -->
-    <h2>Lista de Usuários</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Usuário</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for usuario in usuarios %}
-            <tr>
-                <td>{{ usuario.idusuario }}</td>
-                <td>{{ usuario.usuario }}</td>
-                <td>
-                    <!-- Formulário para excluir o usuário -->
-                    <form action="{{ url_for('usuarios.delete_user', user_id=usuario.idusuario) }}" method="post" style="display:inline;">
-                        <button type="submit">Excluir</button>
-                    </form>
-
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-   <!--
-   <form action="/" method="get">
-      <button type="submit">Voltar à Página Principal</button>
-   </form>
-   -->
 </body>
 </html>

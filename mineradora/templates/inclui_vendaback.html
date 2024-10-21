@@ -177,85 +177,71 @@
         </form>
     </div>
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const produtoSelect = document.getElementById('produto_id');
-        const valorNegociadoInput = document.getElementById('valor_negociado');
-        const valorProdutoInput = document.getElementById('valor_produto');
-        const messageBox = document.getElementById('message');
-        const errorBox = document.getElementById('error');
-        const numerovendaInput = document.getElementById('numerovenda');
+        document.addEventListener('DOMContentLoaded', function() {
+            const produtoSelect = document.getElementById('produto_id');
+            const valorNegociadoInput = document.getElementById('valor_negociado');
+            const valorProdutoInput = document.getElementById('valor_produto');
+            const messageBox = document.getElementById('message');
+            const errorBox = document.getElementById('error');
+            const numerovendaInput = document.getElementById('numerovenda');
 
-        produtoSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
-            const precoVenda = selectedOption.getAttribute('data-preco');
-            valorNegociadoInput.value = precoVenda;  // Define o valor negociado
-            valorProdutoInput.value = precoVenda;  // Define o valor do produto invisível
-        });
+            produtoSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const precoVenda = selectedOption.getAttribute('data-preco');
+                valorNegociadoInput.value = precoVenda;  // Define o valor negociado
+                valorProdutoInput.value = precoVenda;  // Define o valor do produto invisível
+            });
 
-        // Inicializa o valor negociado com o preço do primeiro produto
-        if (produtoSelect.options.length > 0) {
-            const primeiroProduto = produtoSelect.options[0];
-            const precoVenda = primeiroProduto.getAttribute('data-preco');
-            valorNegociadoInput.value = precoVenda;  // Preencher o valor negociado
-            valorProdutoInput.value = precoVenda;  // Preencher o valor do produto invisível
-        }
-
-        // Exibe a mensagem de sucesso ou erro, se houver
-        const urlParams = new URLSearchParams(window.location.search);
-        const teste = urlParams.get('teste');
-        const msg = urlParams.get('msg');
-
-        if (teste === 'sim' && messageBox) {
-            messageBox.innerText = msg;
-            messageBox.style.display = "block";
-        }
-
-        // Verificar se o numerovenda já existe ao perder o foco
-        numerovendaInput.addEventListener('blur', function() {
-            const numerovenda = this.value;
-            if (numerovenda) {
-                fetch(`/vendas/verificar_numerovenda/${numerovenda}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.existe) {
-                            errorBox.innerText = "Venda já existe!";
-                            errorBox.style.display = "block";
-
-                            // Preencher os campos com os dados da venda existente
-                            const venda = data.venda;
-                            document.querySelector('[name="data_venda"]').value = venda.data_venda;
-                            document.querySelector('[name="cliente_id"]').value = venda.idcliente;
-                            document.querySelector('[name="produto_id"]').value = venda.idproduto;
-                            document.querySelector('[name="quantidade"]').value = venda.quantidade;
-                            document.querySelector('[name="valor_negociado"]').value = venda.valor_produto_negociado;
-                            document.querySelector('[name="valor_frete"]').value = venda.valor_frete;
-
-                            // Limpar o campo numerovenda para permitir a correção
-                            numerovendaInput.value = "";
-                            numerovendaInput.focus();
-                        } else {
-                            errorBox.style.display = "none"; // Esconder a mensagem de erro se não existir
-                        }
-                    });
+            // Inicializa o valor negociado com o preço do primeiro produto
+            if (produtoSelect.options.length > 0) {
+                const primeiroProduto = produtoSelect.options[0];
+                const precoVenda = primeiroProduto.getAttribute('data-preco');
+                valorNegociadoInput.value = precoVenda;  // Preencher o valor negociado
+                valorProdutoInput.value = precoVenda;  // Preencher o valor do produto invisível
             }
-        });
 
-        // Fecha as mensagens ao pressionar qualquer tecla e limpa os campos
-        document.addEventListener('keydown', function() {
-            messageBox.style.display = "none"; // Oculta mensagem de sucesso
-            errorBox.style.display = "none"; // Oculta mensagem de erro
+            // Exibe a mensagem de sucesso ou erro, se houver
+            const urlParams = new URLSearchParams(window.location.search);
+            const teste = urlParams.get('teste');
+            const msg = urlParams.get('msg');
 
-            // Limpa os campos do formulário
-            if (numerovendaInput.value === "") {
-                document.querySelector('[name="data_venda"]').value = "";
-                document.querySelector('[name="cliente_id"]').value = "";
-                document.querySelector('[name="produto_id"]').value = "";
-                document.querySelector('[name="quantidade"]').value = "";
-                document.querySelector('[name="valor_negociado"]').value = "";
-                document.querySelector('[name="valor_frete"]').value = "";
+           // Seleciona o elemento com ID 'message'
+
+            if (!messageBox) {
+               console.error('Elemento messageBox não encontrado');
             }
+           if (teste === 'sim' && messageBox) {
+               messageBox.innerText = msg;
+               messageBox.style.display = "block";
+           }
+
+
+            // Verificar se o numerovenda já existe ao perder o foco
+            numerovendaInput.addEventListener('blur', function() {
+                const numerovenda = this.value;
+                if (numerovenda) {
+                    fetch(`/vendas/verificar_numerovenda/${numerovenda}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.existe) {
+                                errorBox.innerText = "Venda já existe!";
+                                errorBox.style.display = "block";
+                                // Limpar o campo numerovenda para permitir a correção
+                                numerovendaInput.value = "";
+                                numerovendaInput.focus();
+                            } else {
+                                errorBox.style.display = "none"; // Esconder a mensagem de erro se não existir
+                            }
+                        });
+                }
+            });
+
+            // Fecha as mensagens ao pressionar qualquer tecla
+            document.addEventListener('keydown', function() {
+                messageBox.style.display = "none"; // Oculta mensagem de sucesso
+                errorBox.style.display = "none"; // Oculta mensagem de erro
+            });
         });
-    });
     </script>
 </body>
 </html>

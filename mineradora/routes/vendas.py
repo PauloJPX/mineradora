@@ -53,7 +53,8 @@ def verificar_numerovenda(numerovenda):
 
     cursor.execute("SELECT * FROM vendas WHERE numerovenda = %s", (numerovenda,))
     venda_existente = cursor.fetchone()
-
+# trocando o formato da data de venda
+    venda_existente['data_venda'] = venda_existente['data_venda'].strftime('%Y-%m-%d')
     cursor.close()
     conn.close()
 

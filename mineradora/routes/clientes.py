@@ -86,4 +86,8 @@ def verificar_cnpj():
     cliente = cursor.fetchone()
     cursor.close()
     conn.close()
-    return jsonify(cliente if cliente else {})
+
+    if cliente:
+        return jsonify(cliente)
+    else:
+        return jsonify(None)

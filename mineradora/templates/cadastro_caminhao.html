@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Caminhão</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+    <script>
+async function consultaplaca() {
+    const placa = document.getElementById('placa').value;
+    const response = await fetch(`/caminhoes/verificar_placa?placa=${encodeURIComponent(placa)}`);
+
+    if (response.ok) {
+        const caminhao = await response.json();
+        console.log('Resposta do servidor:', caminhao);  // Log da resposta do servidor
+        if (caminhao) {
+            // Preenche os campos com os dados do caminhão
+            document.getElementById('modelo').value = caminhao.modelo || '';
+            document.getElementById('nome_motorista').value = caminhao.motorista || ''; // Corrigido para 'motorista'
+            document.getElementById('capacidade_tanque').value = caminhao.capacidade_tanque || '';
+            document.getElementById('ano').value = caminhao.ano || ''; // Incluindo o ano
+            document.getElementById('capacidade').value = caminhao.capacidade || ''; // Incluindo capacidade
+            document.getElementById('proprietario').value = caminhao.proprietario || ''; // Incluindo proprietário
+            document.getElementById('idcaminhao').value = caminhao.idcaminhao || '';
+
+            // Trocar para os botões de alterar e excluir
+            document.getElementById('acao').innerHTML = `
+                <button type="submit">Alterar</button>
+                <a href="/caminhoes/excluir_caminhao/${caminhao.idcaminhao}" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
+            `;
+        } else {
+            // Limpar os campos quando a placa não existe
+            document.getElementById('modelo').value = '';
+            document.getElementById('nome_motorista').value = '';
+            document.getElementById('capacidade_tanque').value = '';
+            document.getElementById('ano').value = ''; // Limpa o campo de ano
+            document.getElementById('capacidade').value = ''; // Limpa o campo de capacidade
+            document.getElementById('proprietario').value = ''; // Limpa o campo de proprietário
+            document.getElementById('idcaminhao').value = '';
+
+            // Trocar para o botão de adicionar
+            document.getElementById('acao').innerHTML = `
+                <button type="submit">Adicionar</button>
+            `;
+        }
+    } else {
+        console.error('Erro ao verificar a placa.');
+    }
+}
+
+    </script>
+    <style>
+        /* Estilos gerais */
+        #placa {
+            background-color: yellow;
+            width: 100px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: rgba(245, 245, 220, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container label {
+            margin: 5px 0;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="number"],
+        .form-container input[type="email"],
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container input.input-resize {
+            width: 150px;
+        }
+
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-container button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        .form-container a {
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        .form-container button:hover,
+        .form-container a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <form action="{{ url_for('caminhoes.cadastro_caminhao') }}" method="post">
+        <label for="placa">Placa:</label>
+        <input type="text" id="placa" name="placa" onblur="consultaplaca()" required>
+        <span style="font-weight: bold; font-size: 20px;">Cadastro de Caminhão</span>
+        <div class="form-container">
+            <label for="modelo">Modelo:</label>
+            <input type="text" id="modelo" name="modelo" required>
+
+            <label for="ano">Ano:</label>
+            <input type="number" id="ano" name="ano" min="1900" max="2100" required>
+
+            <label for="capacidade">Capacidade (toneladas):</label>
+            <input type="number" id="capacidade" name="capacidade" step="0.01" min="0" required>
+
+            <label for="proprietario">Proprietário:</label>
+            <input type="text" id="proprietario" name="proprietario" required>
+
+            <label for="nome_motorista">Nome do Motorista:</label>
+            <input type="text" id="nome_motorista" name="motorista" class="input-resize" required>
+
+            <label for="capacidade_tanque">Capacidade do Tanque (litros):</label>
+            <input type="number" id="capacidade_tanque" name="capacidade_tanque" min="0" class="input-resize" required>
+
+            <input type="hidden" id="idcaminhao" name="idcaminhao"> <!-- Campo oculto para o ID do caminhão -->
+
+            <div id="acao">
+                <button type="submit">Adicionar</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

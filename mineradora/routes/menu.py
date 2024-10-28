@@ -8,9 +8,9 @@ def get_menu_items(is_admin):
     menu_items = [
         {'name': 'Home', 'url': 'inicio.inicial'},
         {'name': 'Clientes', 'url': 'clientes.cadastro_cliente'},
+        {'name': 'Cadastro de Caminhões', 'url': 'caminhoes.cadastro_caminhao'},  # Nome correto para o cadastro de caminhões
         {'name': 'Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
         {'name': 'Logout', 'url': 'auth.logout'}
-
     ]
 
     if is_admin:

@@ -16,7 +16,7 @@ def incluir_venda():
         data_venda = request.form['data_venda']
         cliente_id = request.form['cliente_id']
         produto_id = request.form['produto_id']
-        quantidade = int(request.form['quantidade'])
+        quantidade = float(request.form['quantidade'])
         valor_produto = float(request.form['valor_produto'])
         valor_negociado = float(request.form['valor_negociado'])
         valor_frete = float(request.form['valor_frete']) if request.form['valor_frete'] else 0.0

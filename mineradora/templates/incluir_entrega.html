@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+    <title>Incluir Entrega</title>
+    <style>
+        button {
+            background-color: #4470BF; /* Cor de fundo */
+            color: black; /* Cor do texto */
+            border: none; /* Remover bordas */
+            padding: 10px 20px; /* Espaçamento interno */
+            cursor: pointer; /* Mostrar cursor de mão ao passar o mouse */
+            border-radius: 5px; /* Bordas arredondadas */
+            margin-top: 10px; /* Espaço acima do botão */
+        }
+
+        button:hover {
+            background-color: black; /* Cor do botão ao passar o mouse */
+            color: white; /* Cor do texto */
+            font-weight: bold; /* Texto em negrito */
+        }
+
+        .botaovermelho {
+            background-color: #C41F3D; /* Cor de fundo */
+            color: black; /* Cor do texto */
+            border: none; /* Remover bordas */
+            padding: 10px 20px; /* Espaçamento interno */
+            cursor: pointer; /* Mostrar cursor de mão ao passar o mouse */
+            border-radius: 5px; /* Bordas arredondadas */
+            margin-top: 10px; /* Espaço acima do botão */
+        }
+
+        .message-box {
+            display: none; /* Inicialmente escondido */
+            border: 1px solid #4CAF50;
+            background-color: #dff0d8;
+            color: #3c763d;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .error-box {
+            display: none; /* Inicialmente escondido */
+            border: 1px solid #f44336;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            width: 120px; /* Defina uma largura fixa para os labels */
+            margin-right: 10px; /* Espaço entre label e input */
+        }
+
+        .form-group input,
+        .form-group select {
+            flex: none; /* Não usar flex para evitar que os inputs ocupem todo o espaço */
+        }
+
+        .input-pequeno {
+            width: 10%;
+        }
+
+        .input-medio {
+            width: 30%;
+        }
+
+        .input-grande {
+            width: 400px; /* Largura para campos grandes */
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: rgba(245, 245, 220, 0.5); /* Bege claro com transparência */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-exclui {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: rgba(245, 245, 220, 1); /* Bege claro com transparência */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div id="message" class="message-box"></div>
+        <div id="error" class="error-box"></div>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="numero_entrega">Número da Entrega:</label>
+                <input type="text" class="input-pequeno" name="numero_entrega" id="numero_entrega" required>
+            </div>
+            <div class="form-group">
+                <label for="data_entrega">Data da Entrega:</label>
+                <input type="date" class="input-medio" name="data_entrega" required>
+            </div>
+
+            <div class="form-group">
+                <label for="idvenda">Venda:</label>
+                <select name="idvenda" id="idvenda" class="input-medio">
+                    {% for venda in vendas %}
+                        <option value="{{ venda.idvenda }}">{{ venda.numerovenda }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="idcaminhao">Caminhão:</label>
+                <select name="idcaminhao" id="idcaminhao" class="input-medio">
+                    {% for caminhao in caminhoes %}
+                        <option value="{{ caminhao.idcaminhao }}">{{ caminhao.info_caminhao }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantidade">Quantidade:</label>
+                <input type="number" class="input-pequeno" name="quantidade" step="0.01" required>
+            </div>
+
+            <button type="submit">INCLUIR</button>
+        </form>
+    </div>
+
+    <!-- Formulário para excluir entrega -->
+    <div class="form-exclui">
+        <form id="form_excluir" method="POST" action="/entregas/excluir_entrega">
+            <div class="form-group">
+                <label for="numeroentrega_excluir">Número da Entrega:</label>
+                <input type="text" class="input-pequeno" name="numeroentrega_excluir" id="numeroentrega_excluir" required>
+            </div>
+            <button type="submit" class="botaovermelho">EXCLUIR</button>
+        </form>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const messageBox = document.getElementById('message');
+    const errorBox = document.getElementById('error');
+
+    // Exibe a mensagem de sucesso ou erro, se houver
+    const urlParams = new URLSearchParams(window.location.search);
+    const teste = urlParams.get('teste');
+    const msg = urlParams.get('msg');
+
+    if (teste === 'sim' && messageBox) {
+        messageBox.innerText = msg;
+        messageBox.style.display = "block";
+    }
+
+    // Fecha as mensagens ao pressionar qualquer tecla e limpa os campos
+    document.addEventListener('keydown', function() {
+        messageBox.style.display = "none"; // Oculta mensagem de sucesso
+        errorBox.style.display = "none"; // Oculta mensagem de erro
+        // Aqui você pode adicionar lógica para limpar o formulário, se necessário
+    }); // <-- Aqui estava faltando fechar a chave do event listener
+
+    // Verificar se o numeroentrega já existe ao perder o foco
+    const numeroentregaInput = document.getElementById('numero_entrega');
+    numeroentregaInput.addEventListener('blur', function() {
+        const numeroentrega = this.value;
+        if (numeroentrega) {
+            fetch(`/entregas/verificar_numeroentrega/${numeroentrega}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        errorBox.innerText = "Número da entrega já existe!";
+                        errorBox.style.display = "block";
+                    } else {
+                        errorBox.style.display = "none";
+                    }
+                });
+        }
+    });
+});
+</script>
+</body>
+</html>

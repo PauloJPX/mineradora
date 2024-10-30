@@ -1,7 +1,7 @@
 from flask import Flask, session, redirect, url_for, request
 from config import Config
 from functools import wraps
-from routes import auth, usuarios, menu, clientes, vendas, inicio,  caminhoes
+from routes import auth, usuarios, menu, clientes, vendas, inicio,  caminhoes, entregas, consultas
 
 def login_required(f):
     @wraps(f)
@@ -22,12 +22,14 @@ app.register_blueprint(menu.bp)
 app.register_blueprint(vendas.bp)
 app.register_blueprint(inicio.bp)
 app.register_blueprint(caminhoes.bp)
+app.register_blueprint(entregas.bp)
+app.register_blueprint(consultas.bp)
 
 # Proteger todas as rotas do blueprint de vendas
 @app.before_request
 def require_login():
 
-    listaMenu= ['vendas.', 'usuarios.', 'menu.', 'clientes.', 'caminhoes.']
+    listaMenu= ['vendas.', 'usuarios.', 'menu.', 'clientes.', 'caminhoes.', 'entregas.', 'consultas.']
 
     for menu in listaMenu:
         if request.endpoint and request.endpoint.startswith(menu) and 'logged_in' not in session:

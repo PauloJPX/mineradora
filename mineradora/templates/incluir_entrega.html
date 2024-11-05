@@ -7,33 +7,33 @@
     <title>Incluir Entrega</title>
     <style>
         button {
-            background-color: #4470BF; /* Cor de fundo */
-            color: black; /* Cor do texto */
-            border: none; /* Remover bordas */
-            padding: 10px 20px; /* Espaçamento interno */
-            cursor: pointer; /* Mostrar cursor de mão ao passar o mouse */
-            border-radius: 5px; /* Bordas arredondadas */
-            margin-top: 10px; /* Espaço acima do botão */
+            background-color: #4470BF;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
         }
 
         button:hover {
-            background-color: black; /* Cor do botão ao passar o mouse */
-            color: white; /* Cor do texto */
-            font-weight: bold; /* Texto em negrito */
+            background-color: black;
+            color: white;
+            font-weight: bold;
         }
 
         .botaovermelho {
-            background-color: #C41F3D; /* Cor de fundo */
-            color: black; /* Cor do texto */
-            border: none; /* Remover bordas */
-            padding: 10px 20px; /* Espaçamento interno */
-            cursor: pointer; /* Mostrar cursor de mão ao passar o mouse */
-            border-radius: 5px; /* Bordas arredondadas */
-            margin-top: 10px; /* Espaço acima do botão */
+            background-color: #C41F3D;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
         }
 
         .message-box {
-            display: none; /* Inicialmente escondido */
+            display: none;
             border: 1px solid #4CAF50;
             background-color: #dff0d8;
             color: #3c763d;
@@ -42,7 +42,7 @@
         }
 
         .error-box {
-            display: none; /* Inicialmente escondido */
+            display: none;
             border: 1px solid #f44336;
             background-color: #f8d7da;
             color: #721c24;
@@ -57,13 +57,13 @@
         }
 
         .form-group label {
-            width: 120px; /* Defina uma largura fixa para os labels */
-            margin-right: 10px; /* Espaço entre label e input */
+            width: 120px;
+            margin-right: 10px;
         }
 
         .form-group input,
         .form-group select {
-            flex: none; /* Não usar flex para evitar que os inputs ocupem todo o espaço */
+            flex: none;
         }
 
         .input-pequeno {
@@ -75,7 +75,7 @@
         }
 
         .input-grande {
-            width: 400px; /* Largura para campos grandes */
+            width: 400px;
         }
 
         .form-container {
@@ -84,7 +84,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 40px;
-            background-color: rgba(245, 245, 220, 0.5); /* Bege claro com transparência */
+            background-color: rgba(245, 245, 220, 0.5);
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -95,7 +95,7 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 40px;
-            background-color: rgba(245, 245, 220, 1); /* Bege claro com transparência */
+            background-color: rgba(245, 245, 220, 1);
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -144,7 +144,6 @@
         </form>
     </div>
 
-    <!-- Formulário para excluir entrega -->
     <div class="form-exclui">
         <form id="form_excluir" method="POST" action="/entregas/excluir_entrega">
             <div class="form-group">
@@ -155,12 +154,11 @@
         </form>
     </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     const messageBox = document.getElementById('message');
     const errorBox = document.getElementById('error');
 
-    // Exibe a mensagem de sucesso ou erro, se houver
     const urlParams = new URLSearchParams(window.location.search);
     const teste = urlParams.get('teste');
     const msg = urlParams.get('msg');
@@ -170,28 +168,41 @@
         messageBox.style.display = "block";
     }
 
-    // Fecha as mensagens ao pressionar qualquer tecla e limpa os campos
     document.addEventListener('keydown', function() {
-        messageBox.style.display = "none"; // Oculta mensagem de sucesso
-        errorBox.style.display = "none"; // Oculta mensagem de erro
-        // Aqui você pode adicionar lógica para limpar o formulário, se necessário
-    }); // <-- Aqui estava faltando fechar a chave do event listener
+        messageBox.style.display = "none";
+        errorBox.style.display = "none";
+    });
 
-    // Verificar se o numeroentrega já existe ao perder o foco
     const numeroentregaInput = document.getElementById('numero_entrega');
     numeroentregaInput.addEventListener('blur', function() {
         const numeroentrega = this.value;
         if (numeroentrega) {
-            fetch(`/entregas/verificar_numeroentrega/${numeroentrega}`)
+            fetch(`/entregas/verificar_entrega/${numeroentrega}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.exists) {
+                    if (data.existe) {
                         errorBox.innerText = "Número da entrega já existe!";
                         errorBox.style.display = "block";
+                        const entrega = data.entrega;
+                        document.querySelector('[name="data_entrega"]').value = entrega.data_entrega;
+                        document.querySelector('[name="idvenda"]').value = entrega.idvenda;
+                        document.querySelector('[name="idcaminhao"]').value = entrega.idcaminhao;
+                        document.querySelector('[name="quantidade"]').value = entrega.quantidade;
+                        numeroentregaInput.value = "";
+                        numeroentregaInput.focus();
                     } else {
                         errorBox.style.display = "none";
                     }
                 });
+        }
+    });
+
+    document.addEventListener('keydown', function() {
+        if (numeroentregaInput.value === "") {
+            document.querySelector('[name="data_entrega"]').value = '';
+            document.querySelector('[name="idvenda"]').value = '';
+            document.querySelector('[name="idcaminhao"]').value = '';
+            document.querySelector('[name="quantidade"]').value = '';
         }
     });
 });

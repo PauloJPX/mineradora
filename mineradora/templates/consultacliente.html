@@ -2,10 +2,62 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Consulta Cliente</title>
+    <title>Consulta de Clientes</title>
+    <style>
+        .btn { padding: 10px 20px; margin: 10px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; }
+        .btn:hover { background-color: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table, th, td { border: 1px solid black; padding: 8px; text-align: left; color: white; background-color: gray }
+    </style>
 </head>
 <body>
-    <h1>Consulta Cliente</h1>
-    <h2> aqui começa a primeira consulta</h2>    <!-- Adicione o conteúdo da consulta aqui -->
+    <h1>Consulta de Clientes</h1>
+
+    <!-- Formulário de filtro por Razão Social -->
+    <form method="get" action="/consultas/consultacliente">
+        <label for="razao_social">Filtro por Razão Social:</label>
+        <input type="text" id="razao_social" name="razao_social" value="{{ razao_social or '' }}">
+        <button type="submit" class="btn">Buscar</button>
+    </form>
+
+    <!-- Tabela de resultados -->
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Razão Social</th>
+                <th>Apelido</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Endereço</th>
+                <th>Distância (km)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente['idcliente'] }}</td>
+                    <td>{{ cliente['razao_social'] }}</td>
+                    <td>{{ cliente['apelido'] }}</td>
+                    <td>{{ cliente['telefones'] }}</td>
+                    <td>{{ cliente['email'] }}</td>
+                    <td>{{ cliente['endereco'] }}</td>
+                    <td>{{ cliente['distancia_km'] }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="7">Nenhum cliente encontrado.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <br>
+    <a href="/consultas" class="btn">Voltar</a>
+    <form action="{{ url_for('consultas.gerar_pdf_cliente') }}" method="post">
+         <button type="submit" class="btn">Gerar PDF</button>
+    </form>
+
 </body>
 </html>
+

@@ -6,7 +6,9 @@ bp = Blueprint('entregas', __name__, url_prefix='/entregas')
 
 @bp.route('/incluir', methods=['GET', 'POST'])
 def incluir_entrega():
+
     conn = get_db_connection()
+    conn.start_transaction()
     cursor = conn.cursor(dictionary=True)
 
     if request.method == 'POST':
@@ -61,13 +63,21 @@ def verificar_entrega(numero_entrega):
         entrega_existente['data_entrega'] = entrega_existente['data_entrega'].strftime('%Y-%m-%d')
     try:
        cursor.close()
+       conn.close()
     except Exception as e:
         print(f"Ocorreu um erro de novo: {e}")
 
-    conn.close()
     print(entrega_existente)
+    print('antes de fazer o return')
 
-    return jsonify({"existe": entrega_existente is not None, "entrega": entrega_existente})
+    if entrega_existente:
+        print('vai true e o entrega_existente')
+        return jsonify({"existe":True,"entrega":entrega_existente})
+    else:
+        print('vai false')
+        return jsonify({"existe":False, "entrega": entrega_existente})
+
+
 
 
 @bp.route('/excluir_entrega', methods=['POST'])

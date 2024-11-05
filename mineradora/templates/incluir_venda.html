@@ -219,7 +219,7 @@
                     .then(data => {
                         if (data.existe) {
                             errorBox.innerText = "Venda já existe!";
-                            console.log("Teste: O script está funcionando.");
+                            console.log("Teste: O script venda está funcionando.");
                             errorBox.style.display = "block";
 
                             // Preencher os campos com os dados da venda existente
@@ -243,8 +243,8 @@
             }
         });
 
-        // Fecha as mensagens ao pressionar qualquer tecla e limpa os campos
-        document.addEventListener('keydown', function() {
+           // Fecha as mensagens ao pressionar qualquer tecla e limpa os campos
+           document.addEventListener('keydown', function() {
             messageBox.style.display = "none"; // Oculta mensagem de sucesso
             errorBox.style.display = "none"; // Oculta mensagem de erro
 

@@ -8,10 +8,10 @@ def get_menu_items(is_admin):
     menu_items = [
         {'name': 'Home', 'url': 'inicio.inicial'},
         {'name': 'Clientes', 'url': 'clientes.cadastro_cliente'},
-        {'name': 'Cadastro de Caminhões', 'url': 'caminhoes.cadastro_caminhao'},  # Nome correto para o cadastro de caminhões
+        {'name': 'Caminhões', 'url': 'caminhoes.cadastro_caminhao'},  # Nome correto para o cadastro de caminhões
         {'name': 'Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
         {'name': 'Entregas', 'url': 'entregas.incluir_entrega'}, # nova funcionalidade de entregas
-        {'name': 'Consultas', 'url': 'consultas.exibir_consultas'}, # aqui vai chamar html com varios botoes
+        {'name': 'Consultas', 'url': 'consultas.pagina_consultas'}, # aqui vai chamar html com varios botoes
         {'name': 'Logout', 'url': 'auth.logout'}
     ]
    # pra entender url consultas é o blue print e o exibir_consultas é a funcao da rota /consulta

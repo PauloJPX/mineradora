@@ -25,6 +25,8 @@ app.register_blueprint(caminhoes.bp)
 app.register_blueprint(entregas.bp)
 app.register_blueprint(consultas.bp)
 
+
+
 # Proteger todas as rotas do blueprint de vendas
 @app.before_request
 def require_login():

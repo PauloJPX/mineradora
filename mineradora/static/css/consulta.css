@@ -1,0 +1,12 @@
+
+.btn { padding: 10px 20px; margin: 10px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; }
+.btn:hover { background-color: #0056b3; }
+table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+table, th, td { border: 1px solid black; padding: 8px; text-align: left; color: black; background-color: rgba(240, 240, 240, 0.4)}
+.checkbox-group {
+   background-color: rgba(240, 240, 240, 0.4);
+   padding: 10px;             /* Espaço interno para separar do conteúdo */
+   border-radius: 5px;        /* Bordas arredondadas */
+   border: 1px solid #ccc;    /* Bordas ao redor */
+   display: inline-block;     /* Para que o fundo envolva o conteúdo */
+}

@@ -3,12 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Consulta de Clientes</title>
-    <style>
-        .btn { padding: 10px 20px; margin: 10px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; }
-        .btn:hover { background-color: #0056b3; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table, th, td { border: 1px solid black; padding: 8px; text-align: left; color: white; background-color: gray }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/consulta.css') }}">
+
 </head>
 <body>
     <h1>Consulta de Clientes</h1>
@@ -24,7 +20,7 @@
     <table>
         <thead>
             <tr>
-                <th>ID</th>
+                <th>CNPJ - CPF</th>
                 <th>Razão Social</th>
                 <th>Apelido</th>
                 <th>Telefone</th>
@@ -36,7 +32,7 @@
         <tbody>
             {% for cliente in clientes %}
                 <tr>
-                    <td>{{ cliente['idcliente'] }}</td>
+                    <td>{{ cliente['cnpj_cpf'] }}</td>
                     <td>{{ cliente['razao_social'] }}</td>
                     <td>{{ cliente['apelido'] }}</td>
                     <td>{{ cliente['telefones'] }}</td>
@@ -54,10 +50,16 @@
     <br>
     <br>
     <a href="/consultas" class="btn">Voltar</a>
-    <form action="{{ url_for('consultas.gerar_pdf_cliente') }}" method="post">
-         <button type="submit" class="btn">Gerar PDF</button>
-    </form>
+    <br>
+    <br>
 
+    <!-- Formulário de geração de PDF com opções de formato -->
+    <form action="{{ url_for('consultas.gerar_pdf_cliente') }}" method="post">
+        <div class="checkbox-group">
+            <label><input type="radio" name="formato" value="ficha" checked> Ficha</label>
+            <label><input type="radio" name="formato" value="lista"> Lista</label>
+        </div>
+        <button type="submit" class="btn">Gerar PDF</button>
+    </form>
 </body>
 </html>
-

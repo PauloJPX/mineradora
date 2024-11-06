@@ -41,8 +41,6 @@
 }
 
 
-
-
 .login-form button {
     width: 100%;
     padding: 10px;
@@ -85,3 +83,6 @@
 #menu li a:hover {
     background-color: #555; /* Cor de fundo ao passar o mouse */
 }
+
+
+

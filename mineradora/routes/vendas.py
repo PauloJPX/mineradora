@@ -37,7 +37,7 @@ def incluir_venda():
     cursor.execute("SELECT idcliente, razao_social FROM clientes")
     clientes = cursor.fetchall()
 
-    cursor.execute("SELECT idproduto, descricao, preco_de_venda FROM produtos")
+    cursor.execute("SELECT idproduto, descricao, preco_de_venda FROM produtos where nosso = 1 ")
     produtos = cursor.fetchall()
 
     cursor.close()

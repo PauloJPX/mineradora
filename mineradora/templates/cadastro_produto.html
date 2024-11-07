@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+    <script>
+        async function verificar_descricao() {
+            const descricao = document.getElementById('descricao').value;
+            const response = await fetch(`/produtos/verificar_descricao?descricao=${encodeURIComponent(descricao)}`);
+
+            if (response.ok) {
+                const produto = await response.json();
+                if (produto) {
+                    document.getElementById('descricao').value = produto.descricao;
+                      //document.getElementById('nosso').value = produto.nosso;
+                     // Seleciona o radio button com base no valor do produto.nosso
+                    document.querySelector(`input[name="nosso"][value="${produto.nosso}"]`).checked = true;
+                    document.getElementById('preco_de_custo').value = produto.preco_de_custo;
+                    document.getElementById('preco_de_venda').value = produto.preco_de_venda;
+                    document.getElementById('acao').innerHTML = `
+                        <button type="submit">Alterar</button>
+                        <a href="/produtos/excluir_produto/${produto.idproduto}" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
+                    `;
+                } else {
+                    document.getElementById('acao').innerHTML = `
+                        <button type="submit">Adicionar</button>
+                    `;
+                    document.getElementById('idproduto').value = '';
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos gerais */
+        #descricao {
+            background-color: yellow;
+            width: 200px;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: rgba(245, 245, 220, 0.8); /* Bege claro com transparência */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container label {
+            margin: 5px 0;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container input.input-resize {
+            width: 150px;
+        }
+
+        .form-container textarea.textarea-resize {
+            width: 100%;
+        }
+
+        /* Estilos para organizar os campos lado a lado */
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .flex-item {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .flex-item:last-child {
+            margin-right: 0;
+        }
+
+        /* Botões */
+        .form-container button
+        {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        .form-container a
+         {
+            padding: 10px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+
+        .form-container button:hover,
+        .form-container a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form action="{{ url_for('produtos.cadastro_produto') }}" method="post">
+        <label for="descricao">Descricao:</label>
+        <input type="text" id="descricao" name="descricao" onblur="verificar_descricao()" required>
+
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        <span style="font-weight: bold; font-size: 20px;">Cadastro de Produtos</span>
+        <div class="form-container">
+            <!--
+            <label for="nosso">Nosso Produto:</label>
+            <input type="text" id="nosso" name="nosso" required>
+             -->
+
+            <label for="nosso">Nosso Produto:</label>
+            <div>
+                <label><input type="radio" id="nosso" name="nosso" value="1" required> Sim</label>
+                <label><input type="radio" id="nosso" name="nosso" value="0" required> Não</label>
+            </div>
+
+            <label for="preco_de_custo">Preco de Custo:</label>
+            <input type="number" id="preco_de_custo" name="preco_de_custo" class="input-resize" required step="0.01">             <label for="preco_de_venda">Preco de Venda:</label>
+            <input type="number" id="preco_de_venda" name="preco_de_venda" class="input-resize" required step="0.01">
+
+            <input type="hidden" id="idproduto" name="idproduto"> <!-- Campo oculto para o ID do produto -->
+
+            <div id="acao">
+                <button type="submit">Adicionar</button>
+            </div>
+

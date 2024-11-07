@@ -9,6 +9,7 @@ def get_menu_items(is_admin):
         {'name': 'Home', 'url': 'inicio.inicial'},
         {'name': 'Clientes', 'url': 'clientes.cadastro_cliente'},
         {'name': 'Caminhões', 'url': 'caminhoes.cadastro_caminhao'},  # Nome correto para o cadastro de caminhões
+        {'name': 'Produtos', 'url': 'produtos.cadastro_produto'},
         {'name': 'Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
         {'name': 'Entregas', 'url': 'entregas.incluir_entrega'}, # nova funcionalidade de entregas
         {'name': 'Consultas', 'url': 'consultas.pagina_consultas'}, # aqui vai chamar html com varios botoes

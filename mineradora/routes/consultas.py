@@ -57,8 +57,20 @@ def gerar_pdf_cliente():
     else:
         pdf.add_page()  # Padrão é retrato
 
+    # Adiciona o logo no topo centralizado
+
+    logo_path = 'static/images/logopequeno.jpg'
+    # Obtém a largura da página e a largura da imagem
+    page_width = pdf.w
+    logo_width = 20  # Você pode ajustar a largura do logo conforme necessário
+    logo_x = (page_width - logo_width) / 2  # Centraliza a imagem
+
+    # Adiciona a imagem, a posição X e Y e a largura
+    pdf.image(logo_path, x=logo_x, y=10, w=logo_width)
+
+    # Adiciona um título centralizado abaixo do logo
     pdf.set_font("Arial", size=12)
-    pdf.cell(0, 10, txt="Consulta de Cliente", ln=True, align="C")
+    pdf.cell(0, 10, txt="Consulta de Cliente", ln=True, align="L")
     pdf.ln(10)
 
     if formato == 'ficha':

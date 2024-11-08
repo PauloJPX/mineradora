@@ -13,6 +13,7 @@ def get_menu_items(is_admin):
         {'name': 'Vendas', 'url': 'vendas.incluir_venda'},  # Nova funcionalidade de vendas
         {'name': 'Entregas', 'url': 'entregas.incluir_entrega'}, # nova funcionalidade de entregas
         {'name': 'Consultas', 'url': 'consultas.pagina_consultas'}, # aqui vai chamar html com varios botoes
+        {'name': 'Acessos', 'url': 'acesso.cadastro_acesso'},
         {'name': 'Logout', 'url': 'auth.logout'}
     ]
    # pra entender url consultas é o blue print e o exibir_consultas é a funcao da rota /consulta

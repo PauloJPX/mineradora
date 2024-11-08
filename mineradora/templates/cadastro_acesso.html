@@ -1,0 +1,77 @@
+<head>
+    <style>
+         .selecao {
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: rgba(245, 245, 220, 0.4); /* Bege claro com transparência */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+         }
+
+         button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            margin: 5px 0;
+            display: block;
+            margin: 0 auto;
+         }
+
+         button:hover {
+            background-color:#555;
+         }
+    </style>
+</head>
+
+<h2>Cadastro de Acessos</h2>
+<form method="POST">
+    <select name="usuario" id="usuario" required onchange="atualizarTextoBotao()">
+        <option value="">Selecione o Usuário</option>
+        {% for usuario in usuarios %}
+            <option value="{{ usuario.idusuario }}" {% if usuario.idusuario == request.args.get('usuario')|int %} selected {% endif %}>
+                {{ usuario.usuario }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <div class="selecao">
+        <h3>Selecione os Módulos:</h3>
+        {% for modulo in modulos %}
+            <div>
+                <input type="checkbox" id="modulo_{{ modulo.idmodulo }}" name="modulos" value="{{ modulo.idmodulo }}"
+                    {% if modulo.idmodulo in modulos_selecionados %} checked {% endif %}>
+                <label for="modulo_{{ modulo.idmodulo }}">{{ modulo.nome_modulo }}</label>
+            </div>
+        {% endfor %}
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <button type="submit" id="botaoSalvar">Salvar acesso</button>
+</form>
+
+<script>
+    function atualizarTextoBotao() {
+        const select = document.getElementById("usuario");
+        const botao = document.getElementById("botaoSalvar");
+        const usuarioSelecionado = select.options[select.selectedIndex].text;
+
+        if (usuarioSelecionado !== "Selecione o Usuário") {
+            botao.textContent = `Salvar Acesso Usuário: ${usuarioSelecionado}`;
+        } else {
+            botao.textContent = "Salvar Acesso Usuário: ";
+        }
+    }
+
+    // Atualiza o texto do botão ao carregar a página, caso já haja um usuário selecionado
+    window.onload = atualizarTextoBotao;
+</script>

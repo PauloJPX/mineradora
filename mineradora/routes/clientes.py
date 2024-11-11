@@ -1,10 +1,14 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import get_db_connection
+from req import login_required, pode
+
 
 bp = Blueprint('clientes', __name__, url_prefix='/clientes')
 
 
 @bp.route('/cadastro_cliente', methods=['GET', 'POST'])
+@login_required
+@pode('Clientes')
 def cadastro_cliente():
     if request.method == 'POST':
         cnpj_cpf = request.form['cnpj_cpf']
@@ -67,6 +71,7 @@ def cadastro_cliente():
 
 
 @bp.route('/excluir_cliente/<int:idcliente>', methods=['GET'])
+@login_required
 def excluir_cliente(idcliente):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -78,6 +83,7 @@ def excluir_cliente(idcliente):
 
 
 @bp.route('/verificar_cnpj', methods=['GET'])
+@login_required
 def verificar_cnpj():
     cnpj_cpf = request.args.get('cnpj_cpf')
     conn = get_db_connection()

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Entregas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/consulta.css') }}">
+</head>
+<body>
+    <h1>Consulta de Entregas</h1>
+
+    <form method="POST">
+        <label for="data_inicio">Data Início:</label>
+        <input type="date" id="data_inicio" name="data_inicio" required>
+
+        <label for="data_fim">Data Fim:</label>
+        <input type="date" id="data_fim" name="data_fim" required>
+
+        <label for="idcliente">Cliente:</label>
+        <select id="idcliente" name="idcliente">
+            <option value="0">Todos</option>
+            {% for cliente in clientes %}
+                <option value="{{ cliente.idcliente }}">{{ cliente.razao_social }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Consultar</button>
+    </form>
+
+    {% if entregas %}
+        <h2>Resultados da Consulta</h2>
+        <table border="1">
+            <tr>
+                <th>Entrega</th>
+                <th>Cliente</th>
+                <th>Data Entrega</th>
+                <th>Data Venda</th>
+                <th>Qt.Entregue</th>
+                <th>Qt.Vendida</th>
+                <th>Motorista</th>
+            </tr>
+            {% for entrega in entregas %}
+            <tr>
+                <td>{{ entrega.entrega }}</td>
+                <td>{{ entrega.cliente }}</td>
+                <td>{{ entrega.dataentrega }}</td>
+                <td>{{ entrega.datavenda }}</td>
+                <td>{{ entrega.quantidadeentregue }}</td>
+                <td>{{ entrega.quantidadevendida }}</td>
+                <td>{{ entrega.motorista }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Preencha os filtros e clique em "Consultar" para ver as entregas.</p>
+    {% endif %}
+</body>
+</html>

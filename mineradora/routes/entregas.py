@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from models import get_db_connection
+from req import login_required,pode
 
 bp = Blueprint('entregas', __name__, url_prefix='/entregas')
 
 
 @bp.route('/incluir', methods=['GET', 'POST'])
+@login_required
+@pode('Entregas')
 def incluir_entrega():
 
     conn = get_db_connection()
@@ -45,6 +48,7 @@ def incluir_entrega():
 
 
 @bp.route('/verificar_entrega/<string:numero_entrega>', methods=['GET',  'POST'])
+@login_required
 def verificar_entrega(numero_entrega):
     print("entrei no verificar entrega")
     print(numero_entrega)
@@ -81,6 +85,7 @@ def verificar_entrega(numero_entrega):
 
 
 @bp.route('/excluir_entrega', methods=['POST'])
+@login_required
 def excluir_entrega():
     numero_entrega = request.form['numeroentrega_excluir']
     retorno = verificar_entrega(numero_entrega)  # Essa função retorna um JSON

@@ -1,11 +1,14 @@
 # cadastro de caminhoes
 from flask import Blueprint, render_template, request, redirect, url_for, jsonify
 from models import get_db_connection
+from req import login_required,pode
 
 bp = Blueprint('caminhoes', __name__, url_prefix='/caminhoes')
 
 
 @bp.route('/cadastro_caminhao', methods=['GET', 'POST'])
+@login_required
+@pode('Caminhões')
 def cadastro_caminhao():
     if request.method == 'POST':
         placa = request.form['placa']

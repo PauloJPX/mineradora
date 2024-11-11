@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import get_db_connection
-#from app import login_required  # Importa o decorador
+from req import login_required,pode  # Importa o decorador
 
 bp = Blueprint('vendas', __name__, url_prefix='/vendas')
 
 @bp.route('/incluir', methods=['GET', 'POST'])
-#@login_required  # Protege a rota
+@login_required  # Protege a rota
+@pode('Vendas')
 def incluir_venda():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -46,7 +47,7 @@ def incluir_venda():
     return render_template('incluir_venda.html', clientes=clientes, produtos=produtos)
 
 @bp.route('/verificar_numerovenda/<int:numerovenda>', methods=['GET'])
-
+@login_required
 def verificar_numerovenda(numerovenda):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -61,7 +62,7 @@ def verificar_numerovenda(numerovenda):
     return jsonify({"existe": venda_existente is not None, "venda": venda_existente})
 
 @bp.route('/excluir_venda', methods=['POST'])
-
+@login_required
 def excluir_venda():
     numerovenda = request.form['numerovenda_excluir']
     retorno = verificar_numerovenda(numerovenda) # essa fucao retorna um jso

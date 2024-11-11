@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models import get_db_connection
+from req import login_required,pode
 
 
 
@@ -8,6 +9,8 @@ bp = Blueprint('acesso', __name__, url_prefix='/acesso')
 
 # Rota para exibir o formulário de cadastro de acessos
 @bp.route('/cadastro_acesso', methods=['GET', 'POST'])
+@login_required
+@pode('Acessos')
 def cadastro_acesso():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -26,6 +29,7 @@ def cadastro_acesso():
     if request.method == 'GET':
         usuario_id = request.args.get('usuario', type=int)
         print (usuario_id)
+        print('***********************************')
         if usuario_id:
             # Buscar módulos já atribuídos ao usuário
             cursor.execute("""

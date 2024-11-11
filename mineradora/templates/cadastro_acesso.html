@@ -67,6 +67,12 @@
 
         if (usuarioSelecionado !== "Selecione o Usuário") {
             botao.textContent = `Salvar Acesso Usuário: ${usuarioSelecionado}`;
+
+            // Evita redirecionar se já houver um parâmetro usuario na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.has('usuario') || urlParams.get('usuario') !== select.value) {
+                window.location.href = `/acesso/cadastro_acesso?usuario=${select.value}`;
+            }
         } else {
             botao.textContent = "Salvar Acesso Usuário: ";
         }
@@ -75,3 +81,4 @@
     // Atualiza o texto do botão ao carregar a página, caso já haja um usuário selecionado
     window.onload = atualizarTextoBotao;
 </script>
+

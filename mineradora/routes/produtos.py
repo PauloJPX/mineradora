@@ -1,11 +1,14 @@
 # produtos.py
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import get_db_connection
+from req import login_required,pode
 
 bp = Blueprint('produtos', __name__, url_prefix='/produtos')
 
 
 @bp.route('/cadastro_produto', methods=['GET', 'POST'])
+@login_required
+@pode('Produtos')
 def cadastro_produto():
     if request.method == 'POST':
         descricao = request.form['descricao']
@@ -59,6 +62,7 @@ def cadastro_produto():
 
 
 @bp.route('/excluir_produto/<int:idproduto>', methods=['GET'])
+@login_required
 def excluir_produto(idproduto):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -70,6 +74,7 @@ def excluir_produto(idproduto):
 
 
 @bp.route('/verificar_descricao', methods=['GET'])
+@login_required
 def verificar_descricao():
     descricao = request.args.get('descricao')
     print(descricao)

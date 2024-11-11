@@ -4,16 +4,20 @@ from models import get_db_connection  # Importa a função de conexão
 
 from fpdf import FPDF
 from flask import make_response
+from req import login_required,pode
 
 clientes_global= []
 
 bp = Blueprint('consultas', __name__, url_prefix='/consultas')
 
 @bp.route('/', methods=['GET'])
+@login_required
+@pode('Consultas')
 def pagina_consultas():
     return render_template('consultas.html')  # Certifique-se de que a página 'consultas.html' existe
 
 @bp.route('/consultacliente', methods=['GET'])
+@login_required
 def consulta_cliente():
     global clientes_global  # Acessa a variável global
     # Conecta ao banco de dados usando a função de models.py
@@ -40,6 +44,7 @@ def consulta_cliente():
 
 
 @bp.route('/gerar_pdf_cliente', methods=['POST'])
+@login_required
 def gerar_pdf_cliente():
     global clientes_global
     if not clientes_global:
@@ -119,6 +124,7 @@ def gerar_pdf_cliente():
     return response
 
 @bp.route('/consultavenda', methods=['GET', 'POST'])
+@login_required
 def consulta_vendas():
     vendas = []
     if request.method == 'POST':
@@ -159,3 +165,64 @@ def consulta_vendas():
         conn.close()
 
     return render_template('consultavenda.html', vendas=vendas)
+
+
+@bp.route('/consultaentrega', methods=['GET', 'POST'])
+@login_required
+def consulta_entrega():
+    entregas = []
+    clientes = []
+
+    # Conexão com o banco de dados
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Carregar lista de clientes para o combo box
+    cursor.execute("SELECT idcliente, razao_social FROM clientes ORDER BY razao_social")
+    clientes = cursor.fetchall()
+
+    if request.method == 'POST':
+        data_inicio = request.form.get('data_inicio')
+        data_fim = request.form.get('data_fim')
+        idcliente = request.form.get('idcliente')
+
+        # SQL com filtro de data e cliente
+        query = """
+        SELECT 
+            E.numero_entrega AS entrega,
+            C.razao_social AS cliente,
+            E.data_entrega AS dataentrega,
+            V.data_venda AS datavenda,
+            E.quantidade AS quantidadeentregue,
+            V.quantidade AS quantidadevendida,
+            T.motorista
+        FROM 
+            entrega E
+        JOIN 
+            vendas V ON E.idvenda = V.idvenda
+        JOIN 
+            caminhao T ON E.idcaminhao = T.idcaminhao
+        JOIN 
+            clientes C ON V.idcliente = C.idcliente
+        WHERE 
+            E.data_entrega BETWEEN %s AND %s
+        """
+
+        params = [data_inicio, data_fim]
+
+        # Adicionar filtro por cliente, se selecionado
+        if idcliente and idcliente != '0':
+            query += " AND V.idcliente = %s"
+            params.append(idcliente)
+
+        # Ordenação por cliente
+        query += " ORDER BY C.razao_social, E.data_entrega"
+
+        cursor.execute(query, tuple(params))
+        entregas = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return render_template('consultaentrega.html', entregas=entregas, clientes=clientes)
+

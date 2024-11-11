@@ -1,10 +1,13 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session
 from werkzeug.security import generate_password_hash
 from models import get_db_connection
+from req import login_required,pode
 
 bp = Blueprint('usuarios', __name__, url_prefix='/usuarios')
 
 @bp.route('/cadastro', methods=['GET', 'POST'])
+@login_required
+@pode('Cadastro de Usuarios')
 def cadastro():
     if not session.get('is_admin', False):
         return redirect(url_for('home'))
@@ -34,6 +37,7 @@ def cadastro():
     return render_template('cadastro.html', usuarios=usuarios)
 
 @bp.route('/delete_user/<int:user_id>', methods=['POST'])
+@login_required
 def delete_user(user_id):
     if not session.get('is_admin', False):
         return redirect(url_for('home'))

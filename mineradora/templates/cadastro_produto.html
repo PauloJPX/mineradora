@@ -6,31 +6,32 @@
     <title>Cadastro de Produto</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
     <script>
-        async function verificar_descricao() {
-            const descricao = document.getElementById('descricao').value;
-            const response = await fetch(`/produtos/verificar_descricao?descricao=${encodeURIComponent(descricao)}`);
+    async function verificar_descricao() {
+        const descricao = document.getElementById('descricao').value;
+        const response = await fetch(`/produtos/verificar_descricao?descricao=${encodeURIComponent(descricao)}`);
 
-            if (response.ok) {
-                const produto = await response.json();
-                if (produto) {
-                    document.getElementById('descricao').value = produto.descricao;
-                      //document.getElementById('nosso').value = produto.nosso;
-                     // Seleciona o radio button com base no valor do produto.nosso
-                    document.querySelector(`input[name="nosso"][value="${produto.nosso}"]`).checked = true;
-                    document.getElementById('preco_de_custo').value = produto.preco_de_custo;
-                    document.getElementById('preco_de_venda').value = produto.preco_de_venda;
-                    document.getElementById('acao').innerHTML = `
-                        <button type="submit">Alterar</button>
-                        <a href="/produtos/excluir_produto/${produto.idproduto}" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
-                    `;
-                } else {
-                    document.getElementById('acao').innerHTML = `
-                        <button type="submit">Adicionar</button>
-                    `;
-                    document.getElementById('idproduto').value = '';
-                }
+        if (response.ok) {
+            const produto = await response.json();
+            if (produto) {
+                document.getElementById('descricao').value = produto.descricao;
+                document.querySelector(`input[name="nosso"][value="${produto.nosso}"]`).checked = true;
+                document.getElementById('preco_de_custo').value = produto.preco_de_custo;
+                document.getElementById('preco_de_venda').value = produto.preco_de_venda;
+                document.getElementById('idproduto').value = produto.idproduto; // Adicione esta linha
+
+                document.getElementById('acao').innerHTML = `
+                    <button type="submit">Alterar</button>
+                    <a href="/produtos/excluir_produto/${produto.idproduto}" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
+                `;
+            } else {
+                document.getElementById('acao').innerHTML = `
+                    <button type="submit">Adicionar</button>
+                `;
+                document.getElementById('idproduto').value = ''; // Resetar o campo idproduto
             }
         }
+    }
+
     </script>
     <style>
         /* Estilos gerais */
@@ -146,7 +147,13 @@
             <input type="number" id="preco_de_custo" name="preco_de_custo" class="input-resize" required step="0.01">             <label for="preco_de_venda">Preco de Venda:</label>
             <input type="number" id="preco_de_venda" name="preco_de_venda" class="input-resize" required step="0.01">
 
-            <input type="hidden" id="idproduto" name="idproduto"> <!-- Campo oculto para o ID do produto -->
+            <!--<input type="hidden" id="idproduto" name="idproduto" value="{{ idproduto }}"> -->
+            <!--<input type="hidden" id="idproduto" name="idproduto" value="{{ produto['idproduto'] }}"> -->
+            <!--<input type="hidden" id="idproduto" name="idproduto" value="{{ produto.idproduto }}">-->
+            <input type="hidden" id="idproduto" name="idproduto" value="{{ produto_id }}">
+
+
+            <!-- Campo oculto para o ID do produto -->
 
             <div id="acao">
                 <button type="submit">Adicionar</button>

@@ -19,23 +19,29 @@ def cadastro_produto():
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
+        print(produto_id, nosso, preco_de_custo, preco_de_venda)
+        print('**********************************************')
+        print(produto_id, type(produto_id))
 
         if produto_id:  # Se idproduto  presente, realizar UPDATE
-            cursor.execute(
-                'UPDATE produtos SET descricao=%s, nosso=%s, preco_de_custo=%s, preco_de_venda WHERE idproduto=%s',
+           print('entrei......')
+           print(produto_id)
+           print('++++++++++++++++++++')
+           cursor.execute(
+                'UPDATE produtos SET descricao=%s, nosso=%s, preco_de_custo=%s, preco_de_venda=%s WHERE idproduto=%s',
                 (descricao,nosso,preco_de_custo,preco_de_venda,produto_id)
             )
         else:  # Se não houver idproduto, verificar se já existe e depois realizar INSERT
-            cursor.execute('SELECT idproduto FROM produtos WHERE descricao = %s', (descricao,))
-            existing_produto = cursor.fetchone()
+           cursor.execute('SELECT idproduto FROM produtos WHERE descricao = %s', (descricao,))
+           existing_produto = cursor.fetchone()
 
-            if existing_produto:
+           if existing_produto:
                 return redirect(url_for('produtos.cadastro_produto', descricao=descricao))
 
-            cursor.execute(
+           cursor.execute(
                 'INSERT INTO produtos (descricao,nosso,preco_de_custo,preco_de_venda) VALUES (%s, %s, %s, %s)',
                 (descricao,nosso,preco_de_custo,preco_de_venda)
-            )
+           )
 
         conn.commit()
         cursor.close()
@@ -58,7 +64,10 @@ def cadastro_produto():
     cursor.close()
     conn.close()
 
-    return render_template('cadastro_produto.html', produtos=produtos, produto=produto)
+    produto_id = produto.get('idproduto') if produto else ''
+    return render_template('cadastro_produto.html', produtos=produtos, produto=produto, produto_id=produto_id)
+
+    #return render_template('cadastro_produto.html', produtos=produtos, produto=produto)
 
 
 @bp.route('/excluir_produto/<int:idproduto>', methods=['GET'])

@@ -25,8 +25,9 @@
         <!-- Formulário para backup antes de sair -->
         <h2>Gerar Backup</h2>
         <form action="{{ url_for('auth.gerar_backup') }}" method="post">
-            <label for="backup_location">Escolha onde salvar o backup:</label>
+           <!--    <label for="backup_location">Escolha onde salvar o backup:</label>
             <input type="text" id="backup_location" name="backup_location" placeholder="Caminho para o arquivo de backup" required><br><br>
+            -->
             <button type="submit" name="backup" value="true">Gerar Backup e Sair</button>
         </form>
 

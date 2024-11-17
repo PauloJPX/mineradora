@@ -1,11 +1,14 @@
+
+import os
 from flask import Blueprint, request, redirect, url_for, session, render_template, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import get_db_connection
 from req import login_required
-import os
+from tkinter import Tk
+from tkinter.filedialog import askdirectory
+from datetime import datetime
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -33,36 +36,41 @@ def login():
     return render_template('login.html')
 
 
-
-
 @bp.route('/gerar_backup', methods=['GET', 'POST'])
 @login_required
 def gerar_backup():
     if request.method == 'POST':
-        # Receber o caminho fornecido pelo usuário
-        file_path = request.form['backup_location']
+        # Inicializar o Tkinter e ocultar a janela principal
+        root = Tk()
+        root.withdraw()
 
-        # Certificar-se de que o diretório existe, se não, criar
-        directory = os.path.dirname(file_path)
-        if not os.path.exists(directory):
-            try:
-                os.makedirs(directory)
-                print(f"Diretório {directory} criado com sucesso!")
-            except PermissionError:
-                flash("Erro: Permissão negada para criar o diretório", "danger")
-                return redirect(url_for('auth.logout'))  # ou qualquer outra ação desejada
+        # Abrir a caixa de diálogo para escolher o diretório
+        backup_directory = askdirectory(title="Escolha o diretório para salvar o backup")
+
+        # Verificar se o usuário escolheu um diretório
+        if not backup_directory:
+            flash("Nenhum diretório foi selecionado.", "danger")
+            return redirect(url_for('auth.logout'))
+
+        data_atual = datetime.now()
+        file_name = f"copia{data_atual.strftime('%d%m%y')}.sql"
+
+        # Definir o caminho completo para o arquivo de backup
+        file_path = os.path.join(backup_directory, file_name)
 
         # Conectar ao banco de dados
         connection = get_db_connection()
         cursor = connection.cursor()
-        cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")  #desligando as foreign key
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 0;")  # Desativar as chaves estrangeiras
         cursor.execute("SHOW TABLES")
         tables = cursor.fetchall()
-        file_path = file_path + '\\copia.sql'
+
+        # Criar o arquivo de backup
         with open(file_path, "w") as f:
             for table in tables:
                 table_name = table[0]
                 print(f"Gerando backup para a tabela {table_name}...")
+
                 # Gerar o CREATE TABLE
                 create_table_sql = get_create_table(table_name)
                 f.write(f"{create_table_sql};\n\n")
@@ -73,18 +81,13 @@ def gerar_backup():
                     f.write(f"{insert_statement}\n")
 
                 f.write("\n\n")
-        cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
-        cursor.close()
-        connection.close()
-        print("Backup concluído com sucesso!")
 
+        cursor.execute("SET FOREIGN_KEY_CHECKS = 1;")
         cursor.close()
         connection.close()
 
         flash("Backup gerado com sucesso!", "success")
         return redirect(url_for('auth.login'))
-##########
-
 
 
 

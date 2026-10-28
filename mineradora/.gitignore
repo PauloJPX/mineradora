@@ -1,0 +1,19 @@
+# Ambiente virtual Python
+venv/
+
+# Arquivos temporários do Python
+__pycache__/
+*.py[cod]
+
+# Configurações e segredos locais
+.env
+
+# Configurações do PyCharm
+.idea/
+
+# Cópias do banco de dados
+copia.sql
+copia171124.sql
+
+# Arquivo compactado do projeto
+mineradora.zip
